@@ -2,16 +2,16 @@
 
 ## Overview
 
-The project was designed as a modular AI-assisted support workflow rather than a single chatbot prompt.
+This project was designed as a modular AI-assisted customer-support workflow rather than a single chatbot prompt.
 
-The architecture separates four responsibilities:
+The architecture separates four core responsibilities:
 
-1. Message intake
-2. Persistent context
-3. AI reasoning
-4. Controlled action
+1. **Message intake** — capture and normalize inbound WhatsApp events.
+2. **Persistent context** — store customer messages and operational state outside the AI model.
+3. **AI reasoning** — retrieve structured context and determine the next appropriate action.
+4. **Controlled action** — send responses and update request status under defined rules.
 
-This separation makes the workflow easier to troubleshoot, extend and govern.
+This separation makes the workflow easier to inspect, troubleshoot, extend, and govern.
 
 ## High-Level Architecture
 
@@ -20,7 +20,7 @@ Customer
    ↓
 WhatsApp Business Cloud
    ↓
-Make - Watch Events
+Make — Watch Events
    ↓
 Message Iterator
    ↓
@@ -28,7 +28,7 @@ Normalize message data
    ↓
 Persistent Data Store
    ↓
-Pending-message retrieval
+Pending-message retrieval tool
    ↓
 Make AI Agent
    ↓
@@ -36,100 +36,94 @@ Reason about context and next action
    ↓
 Human authorization when required
    ↓
-WhatsApp response
+WhatsApp response tool
    ↓
 Update request status
-1. Message Intake
+```
+
+## 1. Message Intake
 
 WhatsApp Business Cloud acts as the inbound communication channel.
 
-Make receives WhatsApp events through the Watch Events module. Incoming event payloads may contain multiple structures, so an Iterator is used to expose individual messages and their relevant fields.
+Make receives WhatsApp events through the **Watch Events** module. Incoming payloads may contain multiple nested structures, so an **Iterator** is used to expose individual messages and the fields needed downstream.
 
-Relevant information includes:
+Relevant data includes:
 
-Message ID
-Sender context
-Message text
-Timestamp
-Message type
-Direction
-2. Persistent Context Layer
+- message ID;
+- sender/customer context;
+- message text;
+- timestamp;
+- message type;
+- direction.
 
-A central design decision was not to make the AI depend only on its current conversation.
+## 2. Persistent Context Layer
 
-Inbound messages are persisted in a Make Data Store.
+A central design decision was not to make the AI depend only on conversational memory.
 
-Each record can contain information such as:
+Inbound messages are persisted in a **Make Data Store**, creating an operational source of truth outside the model. Each record can contain fields such as:
 
-message_id
-customer / sender identifier
-text
-timestamp
-direction
-resolution status
+- `message_id`;
+- customer/sender identifier;
+- `text`;
+- `timestamp`;
+- `direction`;
+- `status`.
 
-This allows the system to distinguish between unresolved and resolved requests and retrieve operational context later.
+This allows the system to distinguish unresolved from resolved requests and retrieve context later without depending on the AI to remember previous interactions.
 
-3. Retrieval Layer
+## 3. Retrieval Layer
 
 A dedicated scenario searches the Data Store for pending records.
 
-Instead of giving the AI unrestricted access to operational data, the assistant interacts with a specific retrieval tool designed to return the information needed for the task.
+Instead of giving the AI unrestricted access to operational data, the agent interacts with a specific retrieval tool that returns only the information required for the task. This keeps tool behavior more predictable and makes failures easier to diagnose.
 
-This makes tool behavior more predictable and easier to troubleshoot.
+## 4. AI Reasoning Layer
 
-4. AI Reasoning Layer
+The **Make AI Agent** receives structured information from operational tools and can use that context to:
 
-The Make AI Agent receives structured information from operational tools.
+- identify pending requests;
+- interpret the customer's message;
+- summarize the situation;
+- suggest the next action;
+- prepare a response;
+- determine which operational tool is required.
 
-The agent can use this context to:
+The AI therefore works with explicit system state rather than isolated prompts.
 
-identify pending requests;
-interpret the customer's message;
-summarize the situation;
-suggest the next action;
-prepare a response;
-determine which operational tool is required.
+## 5. Controlled Action Layer
 
-The AI therefore operates on structured system context rather than isolated user prompts.
+Drafting a response and sending a response are intentionally separate operations.
 
-5. Controlled Action Layer
+During testing, external communication could require explicit human authorization before the send tool was executed. This creates a practical **human-in-the-loop** control point for consequential actions.
 
-Sending a message is separated from drafting or reasoning.
+## 6. Resolution Tracking
 
-During testing, the system was configured so that external communication could require explicit authorization before the send tool was executed.
+After a request is handled, the underlying record can be updated from:
 
-This creates a human-in-the-loop control point for consequential actions.
+```text
+pending → resolved
+```
 
-6. Resolution Tracking
+This prevents already-handled requests from repeatedly appearing in pending-message searches and provides a simple operational audit trail.
 
-After a request is handled, its underlying record can be updated from:
+## Design Principles
 
-pending
-
-to:
-
-resolved
-
-This prevents already-handled requests from repeatedly appearing in pending-message searches.
-
-Design Principles
-Persistence over conversational memory
+### Persistence over conversational memory
 
 Operational state should live in a persistent system rather than depend exclusively on an AI conversation.
 
-Modular tools
+### Modular tools
 
-Retrieval, sending and state updates should be separate actions with clear responsibilities.
+Retrieval, sending, and state updates should be separate actions with clear responsibilities.
 
-Human control for consequential actions
+### Human control for consequential actions
 
-AI can prepare and recommend actions while sensitive external actions can remain approval-gated.
+AI can interpret context and prepare actions while sensitive external actions remain approval-gated when appropriate.
 
-Observable state
+### Observable state
 
-The workflow stores message status explicitly, making it possible to inspect what is pending, what has been resolved and where failures occurred.
+The workflow stores message status explicitly, making it possible to inspect what is pending, what has been resolved, and where a failure occurred.
 
-Failure-aware design
+### Failure-aware design
 
-The workflow was built iteratively by testing integrations, inspecting module outputs and correcting issues between WhatsApp Business Cloud, Make, the Data Store and the AI Agent.
+The workflow was built iteratively by testing real integrations, inspecting module outputs, and correcting issues between WhatsApp Business Cloud, Make, the Data Store, and the AI Agent.
