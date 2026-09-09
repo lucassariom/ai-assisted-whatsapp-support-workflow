@@ -2,6 +2,14 @@
 
 A practical AI and no-code automation project designed to receive inbound WhatsApp messages, preserve customer context, retrieve unresolved requests, support AI-assisted reasoning, execute approved responses, and track resolution state.
 
+## Project Status
+
+**Working prototype / proof of concept.** The workflow was tested end to end with real WhatsApp Business Cloud events and controlled test messages.
+
+The validated path covered:
+
+**inbound capture → normalization → persistence → pending-message retrieval → AI Agent reasoning → approved outbound response → resolution-state update**
+
 ## Project Overview
 
 I designed and tested this workflow to explore how generative AI could operate inside a real customer-support process rather than treating each message as an isolated prompt.
@@ -102,7 +110,7 @@ The Make AI Agent consumes operational tool output and uses the returned context
 
 ![Pending message found](08_pending_message_found.png)
 
-A real test demonstrated that the assistant could retrieve an unresolved message from the operational store.
+A controlled test demonstrated that the assistant could retrieve an unresolved message from the operational store.
 
 ### 7. Controlled external action
 
@@ -126,9 +134,9 @@ A few choices were particularly important:
 - **Observable workflow state:** unresolved and resolved work can be inspected directly.
 - **Iterative troubleshooting:** the project was built by testing real payloads and module outputs rather than relying only on a theoretical design.
 
-## What I Learned
+## Skills Demonstrated
 
-The project strengthened my practical understanding of:
+This project demonstrates practical ability in:
 
 - AI-assisted customer support
 - Workflow and process design
@@ -139,8 +147,25 @@ The project strengthened my practical understanding of:
 - Human-in-the-loop automation
 - Integration troubleshooting
 - Edge-case handling
+- Support-operations thinking
+
+## Relevance to Customer Success
+
+Although the prototype focuses on support operations, the same architecture can support Customer Success workflows. Persistent context, structured state, tool-based automation, and AI-assisted next actions can be applied to:
+
+- onboarding and implementation;
+- adoption monitoring;
+- customer-risk detection;
+- structured follow-up;
+- renewal preparation;
+- expansion opportunities;
+- QBR preparation.
+
+## What I Learned
 
 The main lesson was that useful AI automation is less about generating text and more about **connecting reasoning to reliable operational context, constrained tools, and explicit system state**.
+
+The implementation also reinforced the importance of modularity, persistent identifiers, state transitions, approval gates, and testing actual integration behavior rather than only designing the ideal flow.
 
 ## Potential Next Steps
 
@@ -156,12 +181,21 @@ A production version could add:
 - CSAT collection
 - response-time and resolution-time analytics
 - richer states such as `triaged`, `waiting_for_customer`, and `escalated`
+- centralized error handling and retries
+- stronger access-control and privacy controls
 
 ## Documentation
 
 - [System Architecture](docs/architecture.md)
 - [Workflow Logic](docs/workflow-logic.md)
+- [Testing and Validation](docs/testing-and-validation.md)
 - [Lessons Learned](docs/lessons-learned.md)
+
+## Scope and Privacy
+
+This repository documents a prototype, not a production customer-support deployment. Screenshots are included as implementation evidence, and sensitive identifiers or personal contact details were removed or obscured before publication.
+
+Third-party product names and interface elements remain the property of their respective owners and are shown only to document the workflow implementation.
 
 ## Author
 
