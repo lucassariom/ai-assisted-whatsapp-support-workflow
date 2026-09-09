@@ -1,66 +1,30 @@
 # AI-Assisted WhatsApp Customer Support Workflow
 
-A practical no-code AI automation project designed to classify inbound customer messages, preserve conversation context, route requests and generate context-aware responses.
+A practical AI and no-code automation project designed to receive inbound WhatsApp messages, preserve customer context, identify pending requests, route actions and support AI-assisted responses.
 
 ## Project Overview
 
-I designed and tested this workflow using Make, Google Sheets and generative AI to explore how AI could support customer-service operations without losing context between messages.
+I designed and tested this workflow to explore how generative AI could operate within a real customer-support process rather than treating each message as an isolated prompt.
 
-The system was designed around five core problems:
+The system connected WhatsApp Business Cloud with Make and a persistent data layer. Incoming messages were captured, normalized and stored with contextual information so an AI assistant could later retrieve pending requests, reason about the appropriate next action and, when explicitly authorized, send a response and update the status of the request.
 
-1. Identifying the intent of an inbound message
-2. Preserving relevant customer context
-3. Routing the request to the appropriate workflow
-4. Generating an appropriate response
-5. Handling failures and edge cases without breaking the conversation
+## Core Problems Addressed
 
-## Tools
+- Capture inbound customer messages automatically
+- Preserve message and customer context
+- Track unresolved versus resolved requests
+- Retrieve pending messages on demand
+- Give an AI agent access to operational tools
+- Draft or send responses under defined rules
+- Update the underlying record after resolution
+- Troubleshoot failures across integrations
 
+## Technologies
+
+- WhatsApp Business Cloud
 - Make
-- Google Sheets
+- Make AI Agent
+- Make Data Store
 - Generative AI / GPT
-- WhatsApp-based messaging workflows
-
-## Core Workflow
-
-Inbound message
-→ Message classification
-→ Customer/context lookup
-→ Context logging
-→ Routing decision
-→ AI-assisted response
-→ Response delivery
-→ Updated context stored for future interactions
-
-## What I Built
-
-- Message classification logic
-- Context storage and retrieval
-- Routing rules
-- Automated response flows
-- Google Sheets-based logging
-- AI prompt logic
-- Integration troubleshooting
-- Tests for different message types and workflow failures
-
-## Why I Built It
-
-The project started from a practical question:
-
-> How can an AI-assisted support system respond automatically while still remembering who the customer is, what happened previously and what the next appropriate action should be?
-
-Rather than treating every message as an isolated prompt, I designed the workflow around persistent context and routing logic.
-
-## What I Learned
-
-The project gave me practical experience with:
-
-- AI-assisted customer support
-- Workflow automation
-- Context management
-- Prompt design
-- Routing logic
-- Integration troubleshooting
-- No-code automation
-- Edge-case handling
-- Customer journey design
+- Telegram as an assistant interface during testing
+- No-code workflow automation
