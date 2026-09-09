@@ -28,3 +28,9 @@ The system connected WhatsApp Business Cloud with Make and a persistent data lay
 - Generative AI / GPT
 - Telegram as an assistant interface during testing
 - No-code workflow automation
+
+## Documentation
+
+- [System Architecture](docs/architecture.md)
+- [Workflow Logic](docs/workflow-logic.md)
+- [Lessons Learned](docs/lessons-learned.md)
